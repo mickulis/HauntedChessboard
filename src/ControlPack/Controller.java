@@ -6,6 +6,7 @@ import ViewPack.PieceButton;
 import ViewPack.Tile;
 import ViewPack.View;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -29,7 +30,7 @@ public class Controller
 				
 				if(model.isMarked(tile.getPoint()))
 				{
-					tile.paintBlue();
+					tile.paintBorder(Color.blue);
 					
 				}
 				tile.addActionListener(new TileListener(tile));
@@ -54,11 +55,41 @@ public class Controller
 			for (int j = 0; j < 8; j++)
 			{
 				Coordinates p = new Coordinates(i, j);
+				paintBorder(i, j);
 				view.placePiece(p, model.getPiece(p));
 			}
 		}
 		if(model.checkVictoryCondition())
 			winTheGame();
+	}
+	
+	private void paintBorder(int y, int x)
+	{
+		if (model.isMarked(new Coordinates(y, x)))
+		{
+			if (model.getValue(y, x) == 3)
+				view.getTiles()[y][x].paintBorder(Color.green);
+			else
+				view.getTiles()[y][x].paintBorder(Color.blue);
+			return;
+		}
+		switch(model.getValue(y, x))
+		{
+//			case 0: view.getTiles()[y][x].paintBorder(); break;
+			
+//			case 1: view.getTiles()[y][x].paintBorder(Color.yellow); break;
+			
+//			case 2: view.getTiles()[y][x].paintBorder(Color.orange); break;
+			
+			case 3: view.getTiles()[y][x].paintBorder(Color.red); break;
+			
+//			case 4: view.getTiles()[y][x].paintBorder(Color.pink); break;
+			
+//			case 5: view.getTiles()[y][x].paintBorder(Color.magenta); break;
+			
+			default: view.getTiles()[y][x].paintBorder();
+		}
+		
 	}
 	
 	private void winTheGame()
@@ -92,8 +123,9 @@ public class Controller
 				model.deployPiece(tile.getPoint(), focusPiece.getPiece());
 				if(focusPiece.getPiece() != CHESSPIECES.empty)
 					focusPiece.setEnabled(false);
-				focusPiece = null;
-				focusTile = null;
+				
+				
+				clear();
 				redraw();
 				return;
 			}
@@ -101,8 +133,7 @@ public class Controller
 			if(focusTile != null)
 			{
 				model.swap(tile.getPoint(), focusTile.getPoint());
-				focusPiece = null;
-				focusTile = null;
+				clear();
 				redraw();
 				return;
 			}
@@ -123,10 +154,22 @@ public class Controller
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
+			clear();
 			focusPiece = button;
+			button.focus();
 		}
 	}
 	
+	public void clear()
+	{
+		if(focusPiece != null)
+			focusPiece.unfocus();
+		if(focusTile != null)
+			focusTile.unfocus();
+		
+		focusPiece = null;
+		focusTile = null;
+	}
 	//endregion
 	
 }

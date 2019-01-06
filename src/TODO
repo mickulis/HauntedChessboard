@@ -1,12 +1,10 @@
-Pieces availability list
 
-Checking victory condition
+Save/load (serialization)
 
-Save/load/cancel/replay/etc.
+make controller initialize view and model
 
-Number of correct setups
+back
 
-(( check number of winning arangements )) 64*63*62*61*60 combinations, but many of those can be discarded prematurely
 
 UI layout improvements
 
@@ -14,13 +12,6 @@ UI layout improvements
 Unify chess pieces variables in model
 
 
-
-Set borders for marked tiles (blue?)
-Set borders for marked tiles attacked by exactly 3 (?)
-
-Set borders for victory tiles that are overattacked (blue + red)
-
-Set borders for other tiles that are attacked by 3 (red)
 
 
 Tutorial
@@ -30,7 +21,7 @@ Algorithm for setting the victory tiles up
 
 Hints toggle
 
-Focus piece/tile visual
+Focus tile visual
 
 
 LOW PRIORITY:

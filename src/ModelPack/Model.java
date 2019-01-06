@@ -2,18 +2,21 @@ package ModelPack;
 
 import EnumPack.CHESSPIECES;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Random;
 
-public class Model
+public class Model implements Serializable
 {
 	private Random rng = new Random(0);
 	private int height;
 	private int width;
-	private int numberOfPieces;	// not necessary after setup
 	private int[][] chessboard;
 	private Coordinates[] points;
-	private int[] pieceAvailability = {0, 1, 1, 1, 1, 1};	// check if pieces left: foreach if >0 return false
+	private int[] initialPieceAvailability = {0, 1, 1, 1, 1, 1}; // for cloning later on
+	private int[] currentPieceAvailability = {0, 1, 1, 1, 1, 1};	// check if pieces left: foreach if >0 return false
 	private boolean[][] boardOfThrees;
+	private ArrayList<String> backlog = new ArrayList<>();
 	
 	public Model()
 	{
@@ -24,7 +27,6 @@ public class Model
 	{
 		this.height = height;
 		this.width = width;
-		//pieceAvailability = getListOfPieces();
 		setup();
 		
 	}
@@ -36,14 +38,13 @@ public class Model
 		while(trivial)
 		{
 			//region Initial state setup
-			int[] arr = {0, 1, 1, 1, 1, 1};		// can't assign that array to pieceAvailability directly somehow
-			pieceAvailability = arr;
+			currentPieceAvailability = initialPieceAvailability.clone();
 			chessboard = new int[height][width];
-			numberOfPieces = 0;
-			for(int val: pieceAvailability)
+			int numberOfPieces = 0;
+			for(int val: currentPieceAvailability)
 				numberOfPieces += val;
 			points = new Coordinates[numberOfPieces];
-			generatePoints();
+			generatePoints(numberOfPieces);
 			for(int i = 0; i < numberOfPieces; i++)
 				deployPiece(points[i], i+1);
 			//endregion
@@ -72,11 +73,8 @@ public class Model
 		}
 		
 		chessboard = new int[height][width];	// resetting board to an empty state
-		int[] arr = {0, 1, 1, 1, 1, 1};
-		pieceAvailability = arr;
-		numberOfPieces = 0;
-		for(int val: pieceAvailability)
-			numberOfPieces += val;
+		currentPieceAvailability = initialPieceAvailability.clone();
+		
 		
 		
 	}
@@ -185,10 +183,10 @@ public class Model
 		int piece = chessboard[p.getY()][p.getX()];
 		//if(piece > 0)	// obsolete with isOccupied check above (maybe?)
 		{
-			pieceAvailability[piece]++;
-			numberOfPieces++;
+			currentPieceAvailability[piece]++;
 		}
 		chessboard[p.getY()][p.getX()] = 0;
+		backlog.add("r " + p.getY() + " " + p.getX() + " " + piece);
 		//displayBoard();
 		
 	}
@@ -197,12 +195,14 @@ public class Model
 	{
 		if(isOccupied(p))
 			removePiece(p);
-		//if(pieceAvailability[piece] > 0)
+		//if(currentPieceAvailability[piece] > 0)
 		{
-			pieceAvailability[piece]--;
-			numberOfPieces--;
+			currentPieceAvailability[piece]--;
 			chessboard[p.getY()][p.getX()] = piece;
 		}
+		
+		backlog.add("p " + p.getY() + " " + p.getX() + " " + piece);
+		
 		//displayBoard();
 		
 	}
@@ -214,17 +214,17 @@ public class Model
 		int i = CHESSPIECES.getInteger(piece);
 		if(i > 0)
 		{
-			//if(pieceAvailability[i] > 0)
+			//if(currentPieceAvailability[i] > 0)
 			{
-				numberOfPieces--;
-				pieceAvailability[i]--;
+				currentPieceAvailability[i]--;
 				chessboard[p.getY()][p.getX()] = i;
 			}
+			backlog.add("p " + p.getY() + " " + p.getX() + " " + piece);
 			
 			//displayBoard();
 			
 		}
-		else
+		else	// remove
 		{
 			chessboard[p.getY()][p.getX()] = 0;
 			//displayBoard();
@@ -237,6 +237,7 @@ public class Model
 		CHESSPIECES firstPiece = getPiece(first);
 		chessboard[first.getY()][first.getX()] = CHESSPIECES.getInteger(getPiece(second));
 		chessboard[second.getY()][second.getX()] = CHESSPIECES.getInteger(firstPiece);
+		backlog.add("s " + first.getY() + " " + first.getX() + " " + second.getY() + " " + second.getX());
 		
 		//displayBoard();
 		
@@ -245,9 +246,8 @@ public class Model
 	//endregion
 	
 	
-	private void generatePoints()
+	private void generatePoints(int numberOfPieces)
 	{
-		Random rng = new Random();
 		for(int i=0; i < numberOfPieces; i++)
 		{
 			int y, x;
@@ -360,18 +360,10 @@ public class Model
 		return !(getPiece(p) == null);
 	}
 	
-	public int[] getListOfPieces()
-	{
-		int[] pieces = new int[CHESSPIECES.values().length];
-		for(int i = 1; i < CHESSPIECES.values().length; i++)
-			pieces[i] = 1;
-		return pieces;
-	}
-	
 	private int PiecesLeft()
 	{
 		int pieces = 0;
-		for(int i: pieceAvailability)
+		for(int i: currentPieceAvailability)
 			pieces += i;
 		//System.out.println(pieces);
 		return pieces;
@@ -401,6 +393,9 @@ public class Model
 		}
 		return true;
 	}
+	
+	
+	
 	
 	public static void main(String[] args)
 	{

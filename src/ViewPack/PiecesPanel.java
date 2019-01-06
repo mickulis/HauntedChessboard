@@ -14,7 +14,7 @@ public class PiecesPanel extends JPanel
 	public PiecesPanel()
 	{
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		//setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		//remove = new JButton("rmv");
 		
 		
