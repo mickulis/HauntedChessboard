@@ -233,7 +233,7 @@ public class Controller
 	}
 	
 	
-	public void clear()
+	private void clear()
 	{
 		if(focusPiece != null)
 			focusPiece.unfocus();
@@ -281,7 +281,10 @@ public class Controller
 				return;
 			}
 			if(model.isOccupied(tile.getPoint()))
+			{
 				focusTile = tile;
+				tile.focus();
+			}
 		}
 	}
 	

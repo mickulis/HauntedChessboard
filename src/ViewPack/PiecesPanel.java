@@ -1,17 +1,15 @@
 package ViewPack;
 
 import EnumPack.CHESSPIECES;
-
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
-public class PiecesPanel extends JPanel
+class PiecesPanel extends JPanel
 {
 	//JButton remove;
-	PieceButton[] pieces;
+	private PieceButton[] pieces;
 	
-	public PiecesPanel()
+	PiecesPanel()
 	{
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		//setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
@@ -36,6 +34,8 @@ public class PiecesPanel extends JPanel
 		pieces = new PieceButton[6];
 		for(CHESSPIECES piece: CHESSPIECES.values())
 			pieces[CHESSPIECES.getInteger(piece)] = new PieceButton(piece);
+		
+		pieces[0].setText("\u2573");	// X symbol
 		panel.add(pieces[0]);
 		panel.add(pieces[1]);
 		panel.add(pieces[2]);
@@ -60,12 +60,12 @@ public class PiecesPanel extends JPanel
 	}
 	
 	
-	public PieceButton[] getPieceButtons()
+	PieceButton[] getPieceButtons()
 	{
 		return pieces;
 	}
 	
-	public void undeployPiece(CHESSPIECES piece)
+	void undeployPiece(CHESSPIECES piece)
 	{
 		pieces[CHESSPIECES.getInteger(piece)].setEnabled(true);
 	}

@@ -5,16 +5,16 @@ import java.awt.event.ActionListener;
 
 public class MenuPanel extends JPanel
 {
-	JButton newGame;
-	JButton saveGame;
-	JButton loadGame;
-	JButton closeGame;
-	JButton help;
-	JButton giveUp;
+	private JButton newGame;
+	private JButton saveGame;
+	private JButton loadGame;
+	private JButton closeGame;
+	private JButton help;
+	private JButton giveUp;
 	
 	
 	
-	public MenuPanel()
+	MenuPanel()
 	{
 		newGame = new JButton("NEW GAME");
 		saveGame = new JButton("SAVE");

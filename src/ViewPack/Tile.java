@@ -8,9 +8,9 @@ import java.awt.*;
 
 public class Tile extends JButton
 {
-	Coordinates point;
-	Color color;
-	//CHESSPIECES piece;	// remove, use model instead
+	private Coordinates point;
+	private Color color;
+	
 	
 	Tile(int i, int j)
 	{
@@ -38,12 +38,12 @@ public class Tile extends JButton
 		paintBorder();
 	}
 	
-	public void placePiece(CHESSPIECES piece)
+	void placePiece(CHESSPIECES piece)
 	{
 		setText(CHESSPIECES.getSymbol(piece));
 	}
 	
-	public void clearPiece()
+	void clearPiece()
 	{
 		setText("");
 	}

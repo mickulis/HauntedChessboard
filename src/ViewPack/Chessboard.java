@@ -79,7 +79,7 @@ public class Chessboard extends JComponent
 		}
 	}
 	
-	public void placePiece(Coordinates p, CHESSPIECES piece)	// clearPiece = deployPiece(p, null)?
+	void placePiece(Coordinates p, CHESSPIECES piece)	// clearPiece = deployPiece(p, null)?
 	{
 		if(piece == null || piece == CHESSPIECES.empty)
 			clearPiece(p);
@@ -87,12 +87,12 @@ public class Chessboard extends JComponent
 			tiles[p.getY()][p.getX()].placePiece(piece);
 	}
 	
-	public void clearPiece(Coordinates p)
+	private void clearPiece(Coordinates p)		// unnecessary with placePiece(p, null)
 	{
 		tiles[p.getY()][p.getX()].clearPiece();
 	}
 	
-	public Tile[][] getTiles()
+	Tile[][] getTiles()
 	{
 		return tiles;
 	}

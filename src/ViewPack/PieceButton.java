@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class PieceButton extends JButton
 {
-	CHESSPIECES piece;
+	private CHESSPIECES piece;
 	
 	PieceButton(CHESSPIECES piece)
 	{

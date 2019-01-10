@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Coordinates implements Serializable
 {
-	int x, y;
+	private int x, y;
 	
 	public Coordinates(int y, int x)
 	{
@@ -24,8 +24,7 @@ public class Coordinates implements Serializable
 	
 	public boolean equals(Coordinates point)
 	{
-		if(x != point.x || y != point.y)
-			return false;
-		return true;
+		return !(x != point.x || y != point.y);
+		
 	}
 }

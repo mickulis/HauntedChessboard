@@ -32,7 +32,7 @@ public class Model implements Serializable
 		
 	}
 
-	public void setup()
+	private void setup()
 	{
 		int numberOfMarkedTiles = 0;	// board with no 3's
 		int iterator = 0;
@@ -233,7 +233,7 @@ public class Model implements Serializable
 		}
 	}
 	
-	public boolean swap(Coordinates first, Coordinates second)
+	public void swap(Coordinates first, Coordinates second)
 	{
 		CHESSPIECES firstPiece = getPiece(first);
 		chessboard[first.getY()][first.getX()] = CHESSPIECES.getInteger(getPiece(second));
@@ -241,8 +241,6 @@ public class Model implements Serializable
 		backlog.add("s " + first.getY() + " " + first.getX() + " " + second.getY() + " " + second.getX());
 		
 		//displayBoard();
-		
-		return true;
 	}
 	//endregion
 	
@@ -298,7 +296,6 @@ public class Model implements Serializable
 	{
 		for(int i=0; i < numberOfPieces; i++)
 		{
-			int y, x;
 			boolean distinct;
 			do
 			{
