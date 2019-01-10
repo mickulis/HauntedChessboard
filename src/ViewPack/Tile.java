@@ -10,7 +10,7 @@ public class Tile extends JButton
 {
 	Coordinates point;
 	Color color;
-	CHESSPIECES piece;	// remove, use model instead
+	//CHESSPIECES piece;	// remove, use model instead
 	
 	Tile(int i, int j)
 	{
@@ -27,13 +27,19 @@ public class Tile extends JButton
 			setForeground(Color.black);
 		}
 		setBackground(color);
-		setBorder(BorderFactory.createLineBorder(color, 4));
+		paintBorder();
 		setFocusPainted(false);
+	}
+	
+	public void reset()
+	{
+		setText(null);
+		setBackground(color);
+		paintBorder();
 	}
 	
 	public void placePiece(CHESSPIECES piece)
 	{
-		this.piece = piece;
 		setText(CHESSPIECES.getSymbol(piece));
 	}
 	
@@ -49,7 +55,7 @@ public class Tile extends JButton
 	
 	public void paintBorder()
 	{
-		setBorder(BorderFactory.createLineBorder(color, 4));
+		setBorder(null);
 	}
 	
 	public void focus()
@@ -60,11 +66,6 @@ public class Tile extends JButton
 	public void unfocus()
 	{
 		setBorder(BorderFactory.createRaisedBevelBorder());
-	}
-	
-	public CHESSPIECES getPiece()
-	{
-		return piece;
 	}
 	
 	public Coordinates getPoint()

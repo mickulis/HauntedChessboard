@@ -18,35 +18,56 @@ public class Controller
 	private PieceButton focusPiece;	// holding a tile or piece;
 	private Tile focusTile;
 	
-	public Controller(Model m, View v)
+	private boolean hintsOn = true;
+	
+	public Controller()
 	{
-		model = m;
-		view = v;
+		view = new View(8, 8);
 		
-		for(Tile[] t: v.getTiles())
+		for(Tile[] t: view.getTiles())
 		{
 			for(Tile tile: t)
 			{
-				
-				if(model.isMarked(tile.getPoint()))
-				{
-					tile.paintBorder(Color.blue);
-					
-				}
+				tile.reset();
 				tile.addActionListener(new TileListener(tile));
+				tile.setEnabled(false);
 			}
 		}
 		
-		for(PieceButton button: v.getPieceButtons())
+		for(PieceButton button: view.getPieceButtons())
 		{
 			button.addActionListener(new PieceListener(button));
+			button.setEnabled(false);
 		}
 		
 		
-		v.setVisible(true);
+		view.setVisible(true);
+		
+		startGame();
 	}
 	
-	
+	private void startGame()
+	{
+		model = new Model();
+		
+		for(Tile[] t: view.getTiles())
+		{
+			for(Tile tile: t)
+			{
+				if(model.isMarked(tile.getPoint()))
+				{
+					tile.paintBorder(Color.blue);
+				}
+				tile.setEnabled(true);
+			}
+		}
+		
+		for(PieceButton button: view.getPieceButtons())
+		{
+			button.reset();
+		}
+		
+	}
 	
 	private void redraw()
 	{
@@ -118,12 +139,12 @@ public class Controller
 		{
 			if(focusPiece != null)
 			{
-				view.undeployPiece(tile.getPiece());
+				CHESSPIECES currentPiece = model.getPiece(tile.getPoint());
+				view.undeployPiece(currentPiece);
 				model.removePiece(tile.getPoint());
 				model.deployPiece(tile.getPoint(), focusPiece.getPiece());
 				if(focusPiece.getPiece() != CHESSPIECES.empty)
 					focusPiece.setEnabled(false);
-				
 				
 				clear();
 				redraw();

@@ -245,6 +245,42 @@ public class Model implements Serializable
 	}
 	//endregion
 	
+	public void back()
+	{
+		if(backlog.size() == 0 )
+			return;
+		String lastMove = backlog.get(backlog.size() - 1);
+		backlog.remove(backlog.size() - 1);
+		
+		reverseMove(lastMove);
+		
+		
+	}
+	
+	private void reverseMove(String move)
+	{
+		switch(move.charAt(0))
+		{
+			case 'p': reversePlacing(move); break;
+			case 'r': reverseRemoving(move); break;
+			case 's': reverseSwapping(move); break;
+		}
+	}
+	
+	private void reversePlacing(String move)
+	{
+	
+	}
+	
+	private void reverseRemoving(String move)
+	{
+	
+	}
+	
+	private void reverseSwapping(String move)
+	{
+	
+	}
 	
 	private void generatePoints(int numberOfPieces)
 	{
@@ -267,23 +303,13 @@ public class Model implements Serializable
 		}
 	}
 	
-	public int getValue(int y, int x)
+	private int PiecesLeft()
 	{
-		int value = 0;
-		
-		value += checkLine(y, x, -1, -1);
-		value += checkLine(y, x, -1, 0);
-		value += checkLine(y, x, -1, 1);
-		value += checkLine(y, x, 0, -1);
-		value += checkLine(y, x, 0, 1);
-		value += checkLine(y, x, 1, -1);
-		value += checkLine(y, x, 1, 0);
-		value += checkLine(y, x, 1, 1);
-		
-		value += checkKnights(y, x);
-		
-		return value;
-		
+		int pieces = 0;
+		for(int i: currentPieceAvailability)
+			pieces += i;
+		//System.out.println(pieces);
+		return pieces;
 	}
 	
 	private int checkLine(int y, int x, int yMod, int xMod)
@@ -335,39 +361,14 @@ public class Model implements Serializable
 		return value;
 	}
 	
-	private int getTile(int y, int x)
-	{
-		try
-		{
-			return chessboard[y][x];	// returning actual value of a tile
-		}
-		catch(IndexOutOfBoundsException ioobe)
-		{
-			return -1;	// outside of the board
-		}
-	}
 	
-	public CHESSPIECES getPiece(Coordinates p)
-	{
-		int value = getTile(p.getY(), p.getX());
-		if(value > 0)
-			return CHESSPIECES.values()[value];
-		return null;
-	}
 	
 	public boolean isOccupied(Coordinates p)
 	{
 		return !(getPiece(p) == null);
 	}
 	
-	private int PiecesLeft()
-	{
-		int pieces = 0;
-		for(int i: currentPieceAvailability)
-			pieces += i;
-		//System.out.println(pieces);
-		return pieces;
-	}
+	
 	
 	public boolean isMarked(Coordinates p)
 	{
@@ -396,6 +397,45 @@ public class Model implements Serializable
 	
 	
 	
+	
+	public CHESSPIECES getPiece(Coordinates p)
+	{
+		int value = getTile(p.getY(), p.getX());
+		if(value > 0)
+			return CHESSPIECES.values()[value];
+		return null;
+	}
+	
+	public int getValue(int y, int x)
+	{
+		int value = 0;
+		
+		value += checkLine(y, x, -1, -1);
+		value += checkLine(y, x, -1, 0);
+		value += checkLine(y, x, -1, 1);
+		value += checkLine(y, x, 0, -1);
+		value += checkLine(y, x, 0, 1);
+		value += checkLine(y, x, 1, -1);
+		value += checkLine(y, x, 1, 0);
+		value += checkLine(y, x, 1, 1);
+		
+		value += checkKnights(y, x);
+		
+		return value;
+		
+	}
+	
+	private int getTile(int y, int x)
+	{
+		try
+		{
+			return chessboard[y][x];	// returning actual value of a tile
+		}
+		catch(IndexOutOfBoundsException ioobe)
+		{
+			return -1;	// outside of the board
+		}
+	}
 	
 	public static void main(String[] args)
 	{

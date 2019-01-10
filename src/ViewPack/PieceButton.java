@@ -15,8 +15,15 @@ public class PieceButton extends JButton
 		this.piece = piece;
 		unfocus();
 		setPreferredSize(new Dimension(50, 50));
-		// set text depending on piece
+		
 	}
+	
+	public void reset()
+	{
+		unfocus();
+		setEnabled(true);
+	}
+	
 	
 	public CHESSPIECES getPiece()
 	{
