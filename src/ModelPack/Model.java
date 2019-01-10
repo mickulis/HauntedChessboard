@@ -8,6 +8,7 @@ import java.util.Random;
 
 public class Model implements Serializable
 {
+	private int minimalMarkedTiles = 3;
 	private Random rng = new Random(0);
 	private int height;
 	private int width;
@@ -33,9 +34,9 @@ public class Model implements Serializable
 
 	public void setup()
 	{
-		boolean trivial = true;	// board with no 3's
+		int numberOfMarkedTiles = 0;	// board with no 3's
 		int iterator = 0;
-		while(trivial)
+		while(numberOfMarkedTiles < minimalMarkedTiles)
 		{
 			//region Initial state setup
 			currentPieceAvailability = initialPieceAvailability.clone();
@@ -49,7 +50,7 @@ public class Model implements Serializable
 				deployPiece(points[i], i+1);
 			//endregion
 			//region Win condition setup
-			
+			numberOfMarkedTiles = 0;
 			boardOfThrees = new boolean[height][width];
 			for (int i = 0; i < height; i++)			// check triviality with boolean method instead
 			{
@@ -59,13 +60,13 @@ public class Model implements Serializable
 					{
 						boardOfThrees[i][j] = true;
 						System.out.println(i + " " + j + " - victory condition");
-						trivial = false;
+						numberOfMarkedTiles++;
 					}
 				}
 			}
 			//endregion
 			
-			if(trivial)
+			if(numberOfMarkedTiles < minimalMarkedTiles)
 				System.err.println("Trivial! Reroll!");
 			
 			if(iterator++ == 3000)	// failsafe if finding viable setup is very unlikely with set parameters
@@ -362,6 +363,12 @@ public class Model implements Serializable
 	}
 	
 	
+	public boolean isDeployed(CHESSPIECES piece)
+	{
+		if(piece == CHESSPIECES.empty)
+			return false;
+		return (currentPieceAvailability[CHESSPIECES.getInteger(piece)] == 0);
+	}
 	
 	public boolean isOccupied(Coordinates p)
 	{

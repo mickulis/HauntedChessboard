@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 
 import static javax.swing.SwingConstants.CENTER;
+import static javax.swing.SwingConstants.LEFT;
+import static javax.swing.SwingConstants.RIGHT;
 
 public class Chessboard extends JComponent
 {
@@ -21,43 +23,44 @@ public class Chessboard extends JComponent
 		labels = new ArrayList<>();
 		tiles = new Tile[height][width];
 		
-		add(new JLabel());
-		for(int i = 0; i < width; i++)
-		{
-			JLabel label = new JLabel(Character.toString('0' + i), CENTER);
-			labels.add(label);
-			add(label);
-		}
-		add(new JLabel());
+		createLetterRow(width, JLabel.BOTTOM);
 		
 		for(int i = 0; i < height; i++)
 		{
-			JLabel label = new JLabel(Character.toString('0' + i), CENTER);
-			labels.add(label);
-			add(label);
-			for (int j = 0; j < width; j++)
-			{
-				tiles[i][j] = new Tile(i, j);
-				add(tiles[i][j]);
-				tiles[i][j].setVisible(true);
-			}
-			label = new JLabel(Character.toString('0' + i), CENTER);
-			labels.add(label);
-			add(label);
+			createChessboardRow(width, i);
 		}
 		
-		add(new JLabel());
-		for(int i = 0; i < width; i++)
+		createLetterRow(width, JLabel.TOP);
+		
+	}
+	
+	private void createChessboardRow(int width, int i)
+	{
+		JLabel label = new JLabel(Character.toString('8' - (char)i) + "  ", RIGHT);
+		labels.add(label);
+		add(label);
+		for (int j = 0; j < width; j++)
 		{
-			JLabel label = new JLabel(Character.toString('0' + i), CENTER);
+			tiles[i][j] = new Tile(i, j);
+			add(tiles[i][j]);
+			tiles[i][j].setVisible(true);
+		}
+		label = new JLabel("  " + Character.toString('8' - (char)i), LEFT);
+		labels.add(label);
+		add(label);
+	}
+	
+	private void createLetterRow(int width, int bottom)
+	{
+		add(new JLabel());
+		for (int i = 0; i < width; i++)
+		{
+			JLabel label = new JLabel(Character.toString('A' + (char) i), CENTER);
+			label.setVerticalAlignment(bottom);
 			labels.add(label);
 			add(label);
 		}
 		add(new JLabel());
-		
-		
-		
-		
 	}
 	
 	public void setFont(Font font)

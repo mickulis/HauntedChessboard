@@ -11,38 +11,36 @@ public class View extends JFrame
 	private static final int DEFAULT_WIDTH = 800;
 	private static final int DEFAULT_HEIGHT = 600;
 	
-	Chessboard board;
-	PiecesPanel pieces;
-	Menu menu;
+	private Chessboard board;
+	private PiecesPanel pieces;
+	private MenuPanel menuPanel;
 	
 	
-	Font font;
+	private Font font;
+	
 	public View(int height, int width)
 	{
+
+		setTitle("Haunted Chessboard");
 		//setLayout(new BorderLayout());
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BorderLayout(10, 10));
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+		mainPanel.setLayout(new BorderLayout(1, 1));
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 30));
 		
 		board = new Chessboard(height, width);
 		pieces = new PiecesPanel();
 		
-		
-		
-		//region Center panel
-		JPanel panel = new JPanel();
-		mainPanel.add(panel, BorderLayout.CENTER);
-		panel.setLayout(new BorderLayout(10, 12));
-		panel.add(board, BorderLayout.CENTER);
-		panel.add(pieces, BorderLayout.EAST);
+		mainPanel.add(board, BorderLayout.CENTER);
+		mainPanel.add(pieces, BorderLayout.EAST);
 		//endregion
 		
 		//region South panel
-		mainPanel.add(new JLabel("asdfgdnsadfgfds"), BorderLayout.SOUTH);
+		menuPanel = new MenuPanel();
+		mainPanel.add(menuPanel, BorderLayout.SOUTH);
 		
 		
 		//endregion
-		font = new Font(Font.SERIF, Font.BOLD, 40);
+		font = new Font(Font.SERIF, Font.BOLD, 20);
 		
 		
 		
@@ -52,11 +50,8 @@ public class View extends JFrame
 		setResizable(false);
 		
 		add(mainPanel);
-		panel.setVisible(true);
 		board.setVisible(true);
 		mainPanel.setVisible(true);
-		
-		
 		
 		
 	}
@@ -92,5 +87,13 @@ public class View extends JFrame
 	{
 		return new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
+	
+	public MenuPanel getMenuPanel()
+	{
+		return menuPanel;
+	}
+	
+	
+	
 	
 }

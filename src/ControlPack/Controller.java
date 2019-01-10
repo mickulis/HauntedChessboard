@@ -2,16 +2,23 @@ package ControlPack;
 
 import EnumPack.CHESSPIECES;
 import ModelPack.*;
+import ViewPack.MenuPanel;
 import ViewPack.PieceButton;
 import ViewPack.Tile;
 import ViewPack.View;
 
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+
 
 public class Controller
 {
+	private final JFileChooser fileChooser = new JFileChooser(".");
+	
 	private Model model;
 	private View view;
 	
@@ -24,6 +31,30 @@ public class Controller
 	{
 		view = new View(8, 8);
 		
+		setupChessboardTiles();
+		
+		setupChesspieceButtons();
+		
+		setupMenu();
+		
+		
+		view.setVisible(true);
+		
+		startGame();
+		
+	}
+	
+	private void setupChesspieceButtons()
+	{
+		for(PieceButton button: view.getPieceButtons())
+		{
+			button.addActionListener(new PieceListener(button));
+			button.setEnabled(false);
+		}
+	}
+	
+	private void setupChessboardTiles()
+	{
 		for(Tile[] t: view.getTiles())
 		{
 			for(Tile tile: t)
@@ -33,23 +64,30 @@ public class Controller
 				tile.setEnabled(false);
 			}
 		}
-		
-		for(PieceButton button: view.getPieceButtons())
+	}
+	
+	private void setupMenu()
+	{
+		MenuPanel menu = view.getMenuPanel();
 		{
-			button.addActionListener(new PieceListener(button));
-			button.setEnabled(false);
+			menu.addNewGameListener(new StartListener());
+			menu.addCloseGameListener(new CloseListener());
+			menu.addGiveUpListener(new GiveUpListener());
+			menu.addLoadGameListener(new LoadListener());
+			menu.addSaveGameListener(new SaveListener());
+			menu.addHelpListener(new HelpListener());
 		}
 		
-		
-		view.setVisible(true);
-		
-		startGame();
 	}
 	
 	private void startGame()
 	{
 		model = new Model();
-		
+		drawBoard();
+	}
+	
+	private void drawBoard()
+	{
 		for(Tile[] t: view.getTiles())
 		{
 			for(Tile tile: t)
@@ -64,9 +102,16 @@ public class Controller
 		
 		for(PieceButton button: view.getPieceButtons())
 		{
-			button.reset();
+			button.unfocus();
+			if(model.isDeployed(button.getPiece()))
+			{
+				button.setEnabled(false);
+			}
+			else
+			{
+				button.setEnabled(true);
+			}
 		}
-		
 	}
 	
 	private void redraw()
@@ -118,12 +163,75 @@ public class Controller
 		System.err.println("ERROR - GAME ACTUALLY ENDED");
 	}
 	
+	private void saveGame()
+	{
+		File saveFile;
+		int returnValue = fileChooser.showSaveDialog(view);
+		if (returnValue == JFileChooser.APPROVE_OPTION)
+		{
+			saveFile = fileChooser.getSelectedFile();
+			try
+			{
+				FileOutputStream fileOutputStream = new FileOutputStream(saveFile);
+				ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+				objectOutputStream.writeObject(model);
+			}
+			catch (FileNotFoundException fnfe)
+			{
+				System.err.println("FILE NOT FOUND");
+			}
+			catch (IOException ioe)
+			{
+				System.err.println("INPUT OUTPUT EXCEPTION");
+			}
+		}
+	}
+	
+	private void loadGame()
+	{
+		File loadFile;
+		int returnValue = fileChooser.showOpenDialog(view);
+		if (returnValue == JFileChooser.APPROVE_OPTION)
+		{
+			loadFile = fileChooser.getSelectedFile();
+			try
+			{
+				FileInputStream fileInputStream = new FileInputStream(loadFile);
+				ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+				model = (Model)objectInputStream.readObject();
+				drawBoard();
+				redraw();
+			}
+			catch (FileNotFoundException fnfe)
+			{
+				System.err.println("FILE NOT FOUND");
+			}
+			catch (IOException ioe)
+			{
+				System.err.println("INPUT OUTPUT EXCEPTION");
+			}
+			catch (ClassNotFoundException cnfe)
+			{
+				System.err.println("WRONG FILE");
+			}
+		}
+		drawBoard();
+	}
 	
 	
+	public void clear()
+	{
+		if(focusPiece != null)
+			focusPiece.unfocus();
+		if(focusTile != null)
+			focusTile.unfocus();
+		
+		focusPiece = null;
+		focusTile = null;
+	}
 	
 	
-	
-	//region Inner Classes
+	//region Inner Classes		// toImplement: Save, Load, Start, Close, GiveUp, Back, Hints, Help
 	
 	class TileListener implements ActionListener
 	{
@@ -181,16 +289,82 @@ public class Controller
 		}
 	}
 	
-	public void clear()
+	class SaveListener implements ActionListener
 	{
-		if(focusPiece != null)
-			focusPiece.unfocus();
-		if(focusTile != null)
-			focusTile.unfocus();
-		
-		focusPiece = null;
-		focusTile = null;
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			saveGame();
+		}
 	}
+	
+	class LoadListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			loadGame();
+		}
+	}
+	
+	class StartListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			startGame();
+		}
+	}
+	
+	class CloseListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			System.exit(0);
+		}
+	}
+	
+	class GiveUpListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+		
+		}
+	}
+	
+	class BackListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+		
+		}
+	}
+	
+	class HintsListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+		
+		}
+	}
+	
+	class HelpListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+		
+		}
+	}
+	
+	
+	
+	
+	
 	//endregion
 	
 }
