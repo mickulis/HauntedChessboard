@@ -27,9 +27,11 @@ public enum CHESSPIECES
 	
 	public static String getSymbol(CHESSPIECES piece)	// encapsulated maybe
 	{
+		if(piece == null)
+			return null;
 		switch(piece)
 		{
-			case empty: return "\u274C";
+			case empty: return null;
 			case knight: return "\u2658";
 			case bishop: return "\u2657";
 			case rook: return "\u2656";

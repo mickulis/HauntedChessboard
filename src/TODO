@@ -1,31 +1,22 @@
 
-Save/load (serialization)
-
-make controller initialize view and model
 
 back
 
-
 UI layout improvements
-
 
 Unify chess pieces variables in model
 
-
-
-
 Tutorial
-Difficulty settings / controling the number of victory tiles
-
-Algorithm for setting the victory tiles up
 
 Hints toggle
 
 Focus tile visual
 
 
+
 LOW PRIORITY:
-    use unique color for each piece
+
     show tiles attacked by each piece
     show piece attack range
     drag & drop
+    algorithm for setting the victory tiles up

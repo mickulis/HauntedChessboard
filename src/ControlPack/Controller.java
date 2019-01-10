@@ -96,7 +96,18 @@ public class Controller
 				{
 					tile.paintBorder(Color.blue);
 				}
+				else
+				{
+					tile.paintBorder();
+				}
 				tile.setEnabled(true);
+				String text = null;
+				if(model != null)
+				{
+					CHESSPIECES piece = model.getPiece(tile.getPoint());
+					text = CHESSPIECES.getSymbol(piece);
+				}
+				tile.setText(text);
 			}
 		}
 		
@@ -178,11 +189,11 @@ public class Controller
 			}
 			catch (FileNotFoundException fnfe)
 			{
-				System.err.println("FILE NOT FOUND");
+				System.err.println("SAVE: FILE NOT FOUND");
 			}
 			catch (IOException ioe)
 			{
-				System.err.println("INPUT OUTPUT EXCEPTION");
+				System.err.println("SAVE: INPUT OUTPUT EXCEPTION");
 			}
 		}
 	}
@@ -198,21 +209,24 @@ public class Controller
 			{
 				FileInputStream fileInputStream = new FileInputStream(loadFile);
 				ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+				System.out.println("OIS created");
 				model = (Model)objectInputStream.readObject();
+				System.out.println("model loaded");
 				drawBoard();
 				redraw();
 			}
 			catch (FileNotFoundException fnfe)
 			{
-				System.err.println("FILE NOT FOUND");
+				System.err.println("LOAD: FILE NOT FOUND");
 			}
 			catch (IOException ioe)
 			{
-				System.err.println("INPUT OUTPUT EXCEPTION");
+				ioe.printStackTrace();
+				System.err.println("LOAD: INPUT OUTPUT EXCEPTION");
 			}
 			catch (ClassNotFoundException cnfe)
 			{
-				System.err.println("WRONG FILE");
+				System.err.println("LOAD: WRONG FILE");
 			}
 		}
 		drawBoard();
@@ -330,7 +344,8 @@ public class Controller
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-		
+			model.solve();
+			redraw();
 		}
 	}
 	
@@ -339,7 +354,8 @@ public class Controller
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-		
+			model.back();
+			redraw();
 		}
 	}
 	

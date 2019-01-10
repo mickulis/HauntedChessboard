@@ -9,7 +9,7 @@ import java.util.Random;
 public class Model implements Serializable
 {
 	private int minimalMarkedTiles = 3;
-	private Random rng = new Random(0);
+	private Random rng = new Random();
 	private int height;
 	private int width;
 	private int[][] chessboard;
@@ -256,6 +256,17 @@ public class Model implements Serializable
 		reverseMove(lastMove);
 		
 		
+	}
+	
+	public void solve()
+	{
+		currentPieceAvailability = initialPieceAvailability.clone();
+		chessboard = new int[height][width];
+		int numberOfPieces = 0;
+		for(int val: currentPieceAvailability)
+			numberOfPieces += val;
+		for(int i = 0; i < numberOfPieces; i++)
+			deployPiece(points[i], i+1);
 	}
 	
 	private void reverseMove(String move)

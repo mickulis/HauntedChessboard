@@ -16,12 +16,19 @@ public class MenuPanel extends JPanel
 	
 	public MenuPanel()
 	{
-		add(new JButton("NEW GAME"));
-		add(new JButton("SAVE"));
-		add(new JButton("LOAD"));
-		add(new JButton("CLOSE"));
-		add(new JButton("HELP"));
-		add(new JButton("GIVE UP"));
+		newGame = new JButton("NEW GAME");
+		saveGame = new JButton("SAVE");
+		loadGame = new JButton("LOAD");
+		closeGame = new JButton("CLOSE");
+		help = new JButton("HELP");
+		giveUp = new JButton("GIVE UP");
+		
+		add(newGame);
+		add(saveGame);
+		add(loadGame);
+		add(closeGame);
+		add(help);
+		add(giveUp);
 	}
 	
 	
