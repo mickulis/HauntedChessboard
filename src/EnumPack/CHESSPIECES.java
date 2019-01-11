@@ -40,4 +40,22 @@ public enum CHESSPIECES
 		}
 		return null;
 	}
+	
+	
+	public static CHESSPIECES getPiece(String name)
+	{
+		if(name == null)
+			return null;
+		switch(name)
+		{
+			case "": return empty;
+			case "knight": return knight;
+			case "bishop": return bishop;
+			case "rook": return rook;
+			case "king": return king;
+			case "queen": return queen;
+		}
+		return null;
+	}
+	
 }

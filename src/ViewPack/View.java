@@ -5,6 +5,7 @@ import ModelPack.Coordinates;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class View extends JFrame
 {
@@ -15,6 +16,8 @@ public class View extends JFrame
 	private PiecesPanel pieces;
 	private MenuPanel menuPanel;
 	
+	private JButton back;
+	private JButton hint;
 	
 	private Font font;
 	
@@ -28,18 +31,34 @@ public class View extends JFrame
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 30));
 		
 		board = new Chessboard(height, width);
-		pieces = new PiecesPanel();
-		
 		mainPanel.add(board, BorderLayout.CENTER);
-		mainPanel.add(pieces, BorderLayout.EAST);
+		
+		
+		
+		
+		
+		JPanel eastPanel = new JPanel();
+		eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
+		eastPanel.setBorder(BorderFactory.createEmptyBorder(100, 0, 100, 0));
+		
+		
+		setupEastPanel();
+		
+		
+		
+		mainPanel.add(eastPanel, BorderLayout.EAST);
+		
+		
+		eastPanel.add(pieces);
+		eastPanel.add(back);
+		eastPanel.add(new JLabel(" "));
+		eastPanel.add(hint);
 		//endregion
 		
-		//region South panel
 		menuPanel = new MenuPanel();
 		mainPanel.add(menuPanel, BorderLayout.SOUTH);
 		
 		
-		//endregion
 		font = new Font(Font.SERIF, Font.BOLD, 20);
 		
 		
@@ -53,7 +72,18 @@ public class View extends JFrame
 		board.setVisible(true);
 		mainPanel.setVisible(true);
 		
-		
+		JOptionPane.showMessageDialog(null, "GAME INITIALIZED","GAME INITIALIZED", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	private void setupEastPanel()
+	{
+		pieces = new PiecesPanel();
+		back = new JButton("Back");
+		hint = new JButton("Hint");
+		back.setPreferredSize(new Dimension(40, 60));
+		hint.setPreferredSize(new Dimension(40, 50));
+		back.setAlignmentX(Component.CENTER_ALIGNMENT);
+		hint.setAlignmentX(Component.CENTER_ALIGNMENT);
 	}
 	
 	
@@ -94,6 +124,14 @@ public class View extends JFrame
 	}
 	
 	
+	public void addBackListener(ActionListener listener)
+	{
+		back.addActionListener(listener);
+	}
 	
+	public void addHintListener(ActionListener listener)
+	{
+		hint.addActionListener(listener);
+	}
 	
 }

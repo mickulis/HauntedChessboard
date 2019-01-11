@@ -4,6 +4,7 @@ import EnumPack.CHESSPIECES;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Model implements Serializable
@@ -73,6 +74,7 @@ public class Model implements Serializable
 				throw new RuntimeException();
 		}
 		
+		backlog = new ArrayList<>();
 		chessboard = new int[height][width];	// resetting board to an empty state
 		currentPieceAvailability = initialPieceAvailability.clone();
 		
@@ -187,7 +189,7 @@ public class Model implements Serializable
 			currentPieceAvailability[piece]++;
 		}
 		chessboard[p.getY()][p.getX()] = 0;
-		backlog.add("r " + p.getY() + " " + p.getX() + " " + piece);
+		backlog.add("r " + p.getY() + " " + p.getX() + " " + CHESSPIECES.values()[piece]);
 		//displayBoard();
 		
 	}
@@ -202,7 +204,7 @@ public class Model implements Serializable
 			chessboard[p.getY()][p.getX()] = piece;
 		}
 		
-		backlog.add("p " + p.getY() + " " + p.getX() + " " + piece);
+		backlog.add("p " + p.getY() + " " + p.getX() + " " + CHESSPIECES.values()[piece]);
 		
 		//displayBoard();
 		
@@ -244,6 +246,16 @@ public class Model implements Serializable
 	}
 	//endregion
 	
+	public void solve()
+	{
+		currentPieceAvailability = initialPieceAvailability.clone();
+		chessboard = new int[height][width];
+		int numberOfPieces = 0;
+		for(int val: currentPieceAvailability)
+			numberOfPieces += val;
+		for(int i = 0; i < numberOfPieces; i++)
+			deployPiece(points[i], i+1);
+	}
 	public void back()
 	{
 		if(backlog.size() == 0 )
@@ -254,17 +266,6 @@ public class Model implements Serializable
 		reverseMove(lastMove);
 		
 		
-	}
-	
-	public void solve()
-	{
-		currentPieceAvailability = initialPieceAvailability.clone();
-		chessboard = new int[height][width];
-		int numberOfPieces = 0;
-		for(int val: currentPieceAvailability)
-			numberOfPieces += val;
-		for(int i = 0; i < numberOfPieces; i++)
-			deployPiece(points[i], i+1);
 	}
 	
 	private void reverseMove(String move)
@@ -279,17 +280,38 @@ public class Model implements Serializable
 	
 	private void reversePlacing(String move)
 	{
-	
+		String[] movePartitioned = move.split(" ");
+		int y = Integer.parseInt(movePartitioned[1]);
+		int x = Integer.parseInt(movePartitioned[2]);
+		removePiece(new Coordinates(y, x));
+		backlog.remove(backlog.size() - 1);
+		System.out.println(Arrays.toString(movePartitioned));
 	}
 	
 	private void reverseRemoving(String move)
 	{
-	
+		String[] movePartitioned = move.split(" ");
+		int y = Integer.parseInt(movePartitioned[1]);
+		int x = Integer.parseInt(movePartitioned[2]);
+		CHESSPIECES piece = CHESSPIECES.getPiece(movePartitioned[3]);
+		deployPiece(new Coordinates(y, x), piece);
+		backlog.remove(backlog.size() - 1);
+		System.out.println(Arrays.toString(movePartitioned));
 	}
 	
 	private void reverseSwapping(String move)
 	{
-	
+		String[] movePartitioned = move.split(" ");
+		int y = Integer.parseInt(movePartitioned[1]);
+		int x = Integer.parseInt(movePartitioned[2]);
+		Coordinates first = new Coordinates(y, x);
+		
+		y = Integer.parseInt(movePartitioned[3]);
+		x = Integer.parseInt(movePartitioned[4]);
+		Coordinates second = new Coordinates(y, x);
+		swap(first, second);
+		backlog.remove(backlog.size() - 1);
+		System.out.println(Arrays.toString(movePartitioned));
 	}
 	
 	private void generatePoints(int numberOfPieces)

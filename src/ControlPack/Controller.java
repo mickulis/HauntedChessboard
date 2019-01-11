@@ -36,8 +36,8 @@ public class Controller
 		setupChesspieceButtons();
 		
 		setupMenu();
-		
-		
+		view.addBackListener(new BackListener());
+		view.addHintListener(new HintsListener());
 		view.setVisible(true);
 		
 		startGame();
@@ -111,6 +111,11 @@ public class Controller
 			}
 		}
 		
+		redrawPieceButtons();
+	}
+	
+	private void redrawPieceButtons()
+	{
 		for(PieceButton button: view.getPieceButtons())
 		{
 			button.unfocus();
@@ -136,6 +141,9 @@ public class Controller
 				view.placePiece(p, model.getPiece(p));
 			}
 		}
+		
+		redrawPieceButtons();
+		
 		if(model.checkVictoryCondition())
 			winTheGame();
 	}
@@ -348,7 +356,7 @@ public class Controller
 		public void actionPerformed(ActionEvent e)
 		{
 			model.solve();
-			redraw();
+			drawBoard();
 		}
 	}
 	

@@ -1,7 +1,5 @@
 
 
-back
-
 UI layout improvements
 
 Unify chess pieces variables in model
@@ -10,12 +8,12 @@ Tutorial
 
 Hints toggle
 
-Focus tile visual
 
 
 
 LOW PRIORITY:
 
+    better focus tile visual
     show tiles attacked by each piece
     show piece attack range
     drag & drop
