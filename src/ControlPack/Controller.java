@@ -158,23 +158,41 @@ public class Controller
 				view.getTiles()[y][x].paintBorder(Color.blue);
 			return;
 		}
+		
+		if(hintsOn)
+			paintHintBorders(y, x);
+		else
+			paintBasicBorders(y, x);
+	}
+	
+	private void paintBasicBorders(int y, int x)
+	{
 		switch(model.getValue(y, x))
 		{
-//			case 0: view.getTiles()[y][x].paintBorder(); break;
-			
-//			case 1: view.getTiles()[y][x].paintBorder(Color.yellow); break;
-			
-//			case 2: view.getTiles()[y][x].paintBorder(Color.orange); break;
-			
 			case 3: view.getTiles()[y][x].paintBorder(Color.red); break;
-			
-//			case 4: view.getTiles()[y][x].paintBorder(Color.pink); break;
-			
-//			case 5: view.getTiles()[y][x].paintBorder(Color.magenta); break;
 			
 			default: view.getTiles()[y][x].paintBorder();
 		}
-		
+	}
+	
+	private void paintHintBorders(int y, int x)
+	{
+		switch(model.getValue(y, x))
+		{
+			case 0: view.getTiles()[y][x].paintBorder(); break;
+
+			case 1: view.getTiles()[y][x].paintBorder(Color.yellow); break;
+
+			case 2: view.getTiles()[y][x].paintBorder(Color.orange); break;
+
+			case 3: view.getTiles()[y][x].paintBorder(Color.red); break;
+
+			case 4: view.getTiles()[y][x].paintBorder(Color.pink); break;
+
+			case 5: view.getTiles()[y][x].paintBorder(Color.magenta); break;
+			
+			default: view.getTiles()[y][x].paintBorder();
+		}
 	}
 	
 	private void winTheGame()
@@ -375,7 +393,8 @@ public class Controller
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-		
+			hintsOn = !hintsOn;
+			redraw();
 		}
 	}
 	
