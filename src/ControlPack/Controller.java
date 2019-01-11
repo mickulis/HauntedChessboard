@@ -25,7 +25,7 @@ public class Controller
 	private PieceButton focusPiece;	// holding a tile or piece;
 	private Tile focusTile;
 	
-	private boolean hintsOn = true;
+	private boolean hintsOn = false;
 	
 	public Controller()
 	{
@@ -375,6 +375,7 @@ public class Controller
 		{
 			model.solve();
 			drawBoard();
+			redraw();
 		}
 	}
 	
