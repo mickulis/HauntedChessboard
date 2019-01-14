@@ -1,3 +1,9 @@
+/*
+ * Author: Michał Kulis
+ * Project: HauntedChessboard
+ *
+ */
+
 package EnumPack;
 
 public enum CHESSPIECES

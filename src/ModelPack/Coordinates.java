@@ -1,3 +1,9 @@
+/*
+ * Author: Michał Kulis
+ * Project: HauntedChessboard
+ *
+ */
+
 package ModelPack;
 
 import java.io.Serializable;

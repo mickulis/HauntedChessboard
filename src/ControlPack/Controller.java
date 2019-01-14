@@ -1,3 +1,9 @@
+/*
+ * Author: Michał Kulis
+ * Project: HauntedChessboard
+ *
+ */
+
 package ControlPack;
 
 import EnumPack.CHESSPIECES;
@@ -20,16 +26,16 @@ public class Controller
 	private final JFileChooser fileChooser = new JFileChooser(".");
 	
 	private final String[] gameRules = {
-			"The objective of the game is to put chesspieces on the chessboard     ",
+			"The objective of the game is to put chess pieces on the chessboard     ",
 			"according to rules listed below:     ",
 			" ",
-			"    1. Tiles marked with cyan border have to be attacked by exactly 3 chesspieces     ",
-			"    2. Chesspieces cannot occupy marked tiles     ",
-			"    3. Tiles without border can be attacked by any number of chesspieces except for 3     ",
-			"    4. Tiles with chesspieces on them can be attacked by any number of chesspieces     ",
-			"    5. All chesspieces have to be deployed onto the chessboard     ",
+			"    1. Tiles marked with cyan border have to be attacked by exactly 3 chess pieces     ",
+			"    2. Chess pieces cannot occupy marked tiles     ",
+			"    3. Tiles without border can be attacked by any number of chess pieces except for 3     ",
+			"    4. Tiles with chess pieces on them can be attacked by any number of chess pieces     ",
+			"    5. All chess pieces have to be deployed onto the chessboard     ",
 			" ",
-			"Toggling hints on allows you to see how many chesspieces attack each tile.     ",
+			"Toggling hints on allows you to see how many chess pieces attack each tile.     ",
 			" ",
 			"Good luck!     "
 	};
@@ -54,7 +60,7 @@ public class Controller
 		
 		setupMenu();
 		view.addBackListener(new BackListener());
-		HintsListener hintsListener = new HintsListener(view.getHintButton());
+		new HintsListener(view.getHintButton());
 		view.setVisible(true);
 		
 		startGame();
@@ -192,7 +198,6 @@ public class Controller
 			view.getTiles()[y][x].paintBorder(Color.green);
 		else
 			view.getTiles()[y][x].paintBorder(Color.cyan);
-		return;
 	}
 	
 	private void paintUnmarkedBorders(int y, int x)
@@ -200,26 +205,6 @@ public class Controller
 		switch(model.getValue(y, x))
 		{
 			case 3: view.getTiles()[y][x].paintBorder(Color.red); break;
-			
-			default: view.getTiles()[y][x].paintBorder();
-		}
-	}
-	
-	private void paintHintBorders(int y, int x)
-	{
-		switch(model.getValue(y, x))
-		{
-			case 0: view.getTiles()[y][x].paintBorder(); break;
-
-			case 1: view.getTiles()[y][x].paintBorder(Color.yellow); break;
-
-			case 2: view.getTiles()[y][x].paintBorder(Color.orange); break;
-
-			case 3: view.getTiles()[y][x].paintBorder(Color.red); break;
-
-			case 4: view.getTiles()[y][x].paintBorder(Color.pink); break;
-
-			case 5: view.getTiles()[y][x].paintBorder(Color.magenta); break;
 			
 			default: view.getTiles()[y][x].paintBorder();
 		}
@@ -449,10 +434,6 @@ public class Controller
 				hintButton.setBorder(BorderFactory.createRaisedBevelBorder());
 			}
 			redraw();
-		}
-		public void addButton(JButton button)
-		{
-			hintButton = button;
 		}
 	}
 	

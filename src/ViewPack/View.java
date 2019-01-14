@@ -1,3 +1,9 @@
+/*
+ * Author: Michał Kulis
+ * Project: HauntedChessboard
+ *
+ */
+
 package ViewPack;
 
 import EnumPack.CHESSPIECES;
@@ -65,8 +71,7 @@ public class View extends JFrame
 		{
 			font = new javax.swing.plaf.FontUIResource("Serif",Font.PLAIN,30);
 		}
-		else if (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 ||
-				OS.indexOf("aix") > 0)
+		else if (OS.contains("nix") || OS.contains("nux") || OS.contains("aix"))
 		{
 			font = new javax.swing.plaf.FontUIResource("DejaVu Sans Mono Book",Font.PLAIN,30);
 		}
@@ -147,12 +152,7 @@ public class View extends JFrame
 		back.addActionListener(listener);
 	}
 	
-	public void addHintListener(ActionListener listener)
-	{
-		hint.addActionListener(listener);
-	}
-	
-	public JButton getHintButton()
+		public JButton getHintButton()
 	{
 		return hint;
 	}

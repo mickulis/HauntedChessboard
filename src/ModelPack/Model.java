@@ -1,10 +1,15 @@
+/*
+ * Author: Michał Kulis
+ * Project: HauntedChessboard
+ *
+ */
+
 package ModelPack;
 
 import EnumPack.CHESSPIECES;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class Model implements Serializable
@@ -81,7 +86,7 @@ public class Model implements Serializable
 	
 	
 	//region Terminal display
-	public void displayBoard()
+	private void displayBoard()
 	{
 		displayTopGrid();
 		displayLetterRow();

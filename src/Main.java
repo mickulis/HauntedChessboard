@@ -1,3 +1,9 @@
+/*
+ * Author: Michał Kulis
+ * Project: HauntedChessboard
+ *
+ */
+
 import ControlPack.Controller;
 import ModelPack.Model;
 import ViewPack.View;
