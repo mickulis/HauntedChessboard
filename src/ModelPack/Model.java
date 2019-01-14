@@ -60,15 +60,12 @@ public class Model implements Serializable
 					if (getValue(i, j) == 3)
 					{
 						boardOfThrees[i][j] = true;
-						System.out.println(i + " " + j + " - victory condition");
 						numberOfMarkedTiles++;
 					}
 				}
 			}
 			//endregion
 			
-			if(numberOfMarkedTiles < minimalMarkedTiles)
-				System.err.println("Trivial! Reroll!");
 			
 			if(iterator++ == 3000)	// failsafe if finding viable setup is very unlikely with set parameters
 				throw new RuntimeException();
@@ -285,7 +282,6 @@ public class Model implements Serializable
 		int x = Integer.parseInt(movePartitioned[2]);
 		removePiece(new Coordinates(y, x));
 		backlog.remove(backlog.size() - 1);
-		System.out.println(Arrays.toString(movePartitioned));
 	}
 	
 	private void reverseRemoving(String move)
@@ -294,9 +290,8 @@ public class Model implements Serializable
 		int y = Integer.parseInt(movePartitioned[1]);
 		int x = Integer.parseInt(movePartitioned[2]);
 		CHESSPIECES piece = CHESSPIECES.getPiece(movePartitioned[3]);
-		deployPiece(new Coordinates(y, x), piece);
+		deployPiece(new Coordinates(y, x), CHESSPIECES.getInteger(piece));
 		backlog.remove(backlog.size() - 1);
-		System.out.println(Arrays.toString(movePartitioned));
 	}
 	
 	private void reverseSwapping(String move)
@@ -311,7 +306,6 @@ public class Model implements Serializable
 		Coordinates second = new Coordinates(y, x);
 		swap(first, second);
 		backlog.remove(backlog.size() - 1);
-		System.out.println(Arrays.toString(movePartitioned));
 	}
 	
 	private void generatePoints(int numberOfPieces)
@@ -323,7 +317,6 @@ public class Model implements Serializable
 			{
 				distinct = true;
 				points[i] = new Coordinates(rng.nextInt(height), rng.nextInt(width));
-				System.out.println("Coordinates nr " + i + ": " + points[i].getY() + ", " + points[i].getX());
 				for(int j = 0; j < i; j++)
 				{
 					if(points[i] == points[j])
@@ -339,7 +332,6 @@ public class Model implements Serializable
 		int pieces = 0;
 		for(int i: currentPieceAvailability)
 			pieces += i;
-		//System.out.println(pieces);
 		return pieces;
 	}
 	
@@ -393,11 +385,11 @@ public class Model implements Serializable
 	}
 	
 	
-	public boolean isDeployed(CHESSPIECES piece)
+	public boolean isDeployed(int piece)
 	{
-		if(piece == CHESSPIECES.empty)
+		if(piece == 0)
 			return false;
-		return (currentPieceAvailability[CHESSPIECES.getInteger(piece)] == 0);
+		return (currentPieceAvailability[piece] == 0);
 	}
 	
 	public boolean isOccupied(Coordinates p)
@@ -414,15 +406,12 @@ public class Model implements Serializable
 	
 	public boolean checkVictoryCondition()
 	{
-		System.out.println("Checking victory conditions");
 		if(PiecesLeft() > 0)
 			return false;
 		for(int i = 0; i < height; i++)
 		{
 			for (int j = 0; j < width; j++)
 			{
-				if(boardOfThrees[i][j])
-					System.out.println(getValue(i, j));
 				if(getValue(i, j) == 3 && !boardOfThrees[i][j])
 					return false;
 				if(getValue(i, j) != 3 && boardOfThrees[i][j])
@@ -445,6 +434,9 @@ public class Model implements Serializable
 	
 	public int getValue(int y, int x)
 	{
+		if(isOccupied(new Coordinates(y, x)))
+			return 0;
+		
 		int value = 0;
 		
 		value += checkLine(y, x, -1, -1);

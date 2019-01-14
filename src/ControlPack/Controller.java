@@ -94,7 +94,7 @@ public class Controller
 			{
 				if(model.isMarked(tile.getPoint()))
 				{
-					tile.paintBorder(Color.blue);
+					tile.paintBorder(Color.cyan);
 				}
 				else
 				{
@@ -119,7 +119,7 @@ public class Controller
 		for(PieceButton button: view.getPieceButtons())
 		{
 			button.unfocus();
-			if(model.isDeployed(button.getPiece()))
+			if(model.isDeployed(CHESSPIECES.getInteger(button.getPiece())))
 			{
 				button.setEnabled(false);
 			}
@@ -132,40 +132,52 @@ public class Controller
 	
 	private void redraw()
 	{
+		redrawTiles();
+		redrawPieceButtons();
+		if(model.checkVictoryCondition())
+			winTheGame(true);
+	}
+	
+	private void redrawTiles()
+	{
 		for(int i = 0; i < 8; i++)
 		{
 			for (int j = 0; j < 8; j++)
 			{
 				Coordinates p = new Coordinates(i, j);
 				paintBorder(i, j);
-				view.placePiece(p, model.getPiece(p));
+				if(model.isOccupied(p))
+					view.placePiece(p, model.getPiece(p));
+				else if(hintsOn)
+					view.placeHint(p, model.getValue(i, j));
+				else
+					view.placePiece(p, null);
 			}
 		}
-		
-		redrawPieceButtons();
-		
-		if(model.checkVictoryCondition())
-			winTheGame();
 	}
 	
 	private void paintBorder(int y, int x)
 	{
 		if (model.isMarked(new Coordinates(y, x)))
 		{
-			if (model.getValue(y, x) == 3)
-				view.getTiles()[y][x].paintBorder(Color.green);
-			else
-				view.getTiles()[y][x].paintBorder(Color.blue);
-			return;
+			paintMarkedBorders(y, x);
 		}
-		
-		if(hintsOn)
-			paintHintBorders(y, x);
 		else
-			paintBasicBorders(y, x);
+		{
+			paintUnmarkedBorders(y, x);
+		}
 	}
 	
-	private void paintBasicBorders(int y, int x)
+	private void paintMarkedBorders(int y, int x)
+	{
+		if (model.getValue(y, x) == 3)
+			view.getTiles()[y][x].paintBorder(Color.green);
+		else
+			view.getTiles()[y][x].paintBorder(Color.cyan);
+		return;
+	}
+	
+	private void paintUnmarkedBorders(int y, int x)
 	{
 		switch(model.getValue(y, x))
 		{
@@ -195,9 +207,13 @@ public class Controller
 		}
 	}
 	
-	private void winTheGame()
+	private void winTheGame(boolean trueEnding)
 	{
-		System.err.println("ERROR - GAME ACTUALLY ENDED");
+		// do something here
+		if(trueEnding)
+			JOptionPane.showMessageDialog(view, "You have won","VICTORY", JOptionPane.INFORMATION_MESSAGE);
+		else
+			JOptionPane.showMessageDialog(view, "You have given up","CONCEDE", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	private void saveGame()
@@ -235,9 +251,7 @@ public class Controller
 			{
 				FileInputStream fileInputStream = new FileInputStream(loadFile);
 				ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-				System.out.println("OIS created");
 				model = (Model)objectInputStream.readObject();
-				System.out.println("model loaded");
 				drawBoard();
 				redraw();
 			}
@@ -290,7 +304,7 @@ public class Controller
 				CHESSPIECES currentPiece = model.getPiece(tile.getPoint());
 				view.undeployPiece(currentPiece);
 				model.removePiece(tile.getPoint());
-				model.deployPiece(tile.getPoint(), focusPiece.getPiece());
+				model.deployPiece(tile.getPoint(), CHESSPIECES.getInteger(focusPiece.getPiece()));
 				if(focusPiece.getPiece() != CHESSPIECES.empty)
 					focusPiece.setEnabled(false);
 				
@@ -375,7 +389,10 @@ public class Controller
 		{
 			model.solve();
 			drawBoard();
-			redraw();
+			redrawTiles();
+			redrawPieceButtons();
+			if(model.checkVictoryCondition())
+				winTheGame(false);
 		}
 	}
 	

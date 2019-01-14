@@ -87,6 +87,13 @@ public class Chessboard extends JComponent
 			tiles[p.getY()][p.getX()].placePiece(piece);
 	}
 	
+	void placeHint(Coordinates p, int value)	// clearPiece = deployPiece(p, null)?
+	{
+		tiles[p.getY()][p.getX()].placeHint(value);
+	}
+	
+	
+	
 	private void clearPiece(Coordinates p)		// unnecessary with placePiece(p, null)
 	{
 		tiles[p.getY()][p.getX()].clearPiece();

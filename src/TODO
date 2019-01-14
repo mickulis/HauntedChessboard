@@ -1,14 +1,19 @@
 
+HIGH PRIORITY:
 
-UI layout improvements
+    HELP
+    End game screen
+    Hints button toggle effect
 
-Unify chess pieces variables in model
 
-Tutorial
 
-Improve hints
-Add hints for marked tiles
-    Maybe put numbers on tiles
+MID PRIORITY:
+
+    UI layout improvements
+    Unify chess pieces variables in model
+    Improve hints
+    Add hints for marked tiles
+        Maybe put numbers on tiles
 
 
 

@@ -9,7 +9,9 @@ import java.awt.*;
 public class Tile extends JButton
 {
 	private Coordinates point;
-	private Color color;
+	private Color backgroundColor;
+	private Color foregroundColor;
+	private Color hintColor = Color.gray;
 	
 	
 	Tile(int i, int j)
@@ -18,15 +20,17 @@ public class Tile extends JButton
 		point = new Coordinates(i, j);
 		if((i + j) % 2 == 0)
 		{
-			color = Color.decode("#663300");
-			setForeground(Color.white);
+			backgroundColor = Color.decode("#663300");
+			foregroundColor = Color.white;
+			
 		}
 		else
 		{
-			color = Color.decode("#b69b4c");
-			setForeground(Color.black);
+			backgroundColor = Color.decode("#b69b4c");
+			foregroundColor = Color.black;
 		}
-		setBackground(color);
+		setBackground(backgroundColor);
+		setForeground(foregroundColor);
 		paintBorder();
 		setFocusPainted(false);
 	}
@@ -34,13 +38,20 @@ public class Tile extends JButton
 	public void reset()
 	{
 		setText(null);
-		setBackground(color);
+		setBackground(backgroundColor);
 		paintBorder();
 	}
 	
 	void placePiece(CHESSPIECES piece)
 	{
+		setForeground(foregroundColor);
 		setText(CHESSPIECES.getSymbol(piece));
+	}
+	
+	void placeHint(int value)
+	{
+		setForeground(hintColor);
+		setText(Integer.toString(value));
 	}
 	
 	void clearPiece()
