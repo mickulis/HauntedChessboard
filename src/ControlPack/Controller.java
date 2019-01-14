@@ -19,12 +19,29 @@ public class Controller
 {
 	private final JFileChooser fileChooser = new JFileChooser(".");
 	
+	private final String[] gameRules = {
+			"The objective of the game is to put chesspieces on the chessboard     ",
+			"according to rules listed below:     ",
+			" ",
+			"    1. Tiles marked with cyan border have to be attacked by exactly 3 chesspieces     ",
+			"    2. Chesspieces cannot occupy marked tiles     ",
+			"    3. Tiles without border can be attacked by any number of chesspieces except for 3     ",
+			"    4. Tiles with chesspieces on them can be attacked by any number of chesspieces     ",
+			"    5. All chesspieces have to be deployed onto the chessboard     ",
+			" ",
+			"Toggling hints on allows you to see how many chesspieces attack each tile.     ",
+			" ",
+			"Good luck!     "
+	};
+	
+	
 	private Model model;
 	private View view;
 	
 	private PieceButton focusPiece;	// holding a tile or piece;
 	private Tile focusTile;
 	
+	private boolean victorious;
 	private boolean hintsOn = false;
 	
 	public Controller()
@@ -37,7 +54,7 @@ public class Controller
 		
 		setupMenu();
 		view.addBackListener(new BackListener());
-		view.addHintListener(new HintsListener());
+		HintsListener hintsListener = new HintsListener(view.getHintButton());
 		view.setVisible(true);
 		
 		startGame();
@@ -83,6 +100,7 @@ public class Controller
 	private void startGame()
 	{
 		model = new Model();
+		victorious = false;
 		drawBoard();
 	}
 	
@@ -209,11 +227,12 @@ public class Controller
 	
 	private void winTheGame(boolean trueEnding)
 	{
-		// do something here
-		if(trueEnding)
-			JOptionPane.showMessageDialog(view, "You have won","VICTORY", JOptionPane.INFORMATION_MESSAGE);
-		else
-			JOptionPane.showMessageDialog(view, "You have given up","CONCEDE", JOptionPane.INFORMATION_MESSAGE);
+		if(!victorious)
+			if(trueEnding)
+				JOptionPane.showMessageDialog(view, "You have won","VICTORY", JOptionPane.INFORMATION_MESSAGE);
+			else
+				JOptionPane.showMessageDialog(view, "You have given up","CONCEDE", JOptionPane.INFORMATION_MESSAGE);
+		victorious = true;
 	}
 	
 	private void saveGame()
@@ -408,11 +427,32 @@ public class Controller
 	
 	class HintsListener implements ActionListener
 	{
+		
+		JButton hintButton;
+		
+		HintsListener(JButton button)
+		{
+			hintButton = button;
+			hintButton.addActionListener(this);
+		}
+		
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
 			hintsOn = !hintsOn;
+			if(hintsOn)
+			{
+				hintButton.setBorder(BorderFactory.createLoweredBevelBorder());
+			}
+			else
+			{
+				hintButton.setBorder(BorderFactory.createRaisedBevelBorder());
+			}
 			redraw();
+		}
+		public void addButton(JButton button)
+		{
+			hintButton = button;
 		}
 	}
 	
@@ -421,7 +461,7 @@ public class Controller
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-		
+			JOptionPane.showMessageDialog(view, gameRules,"Game rules", JOptionPane.PLAIN_MESSAGE);
 		}
 	}
 	

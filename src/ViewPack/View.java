@@ -25,7 +25,6 @@ public class View extends JFrame
 	{
 
 		setTitle("Haunted Chessboard");
-		//setLayout(new BorderLayout());
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout(1, 1));
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 30));
@@ -90,11 +89,14 @@ public class View extends JFrame
 	{
 		pieces = new PiecesPanel();
 		back = new JButton("Back");
-		hint = new JButton("Hint");
+		hint = new JButton("    Hints    ");
 		back.setPreferredSize(new Dimension(40, 60));
 		hint.setPreferredSize(new Dimension(40, 50));
 		back.setAlignmentX(Component.CENTER_ALIGNMENT);
 		hint.setAlignmentX(Component.CENTER_ALIGNMENT);
+		hint.setBorder(BorderFactory.createRaisedBevelBorder());
+		hint.setFocusPainted(false);
+		back.setFocusPainted(false);
 	}
 	
 	
@@ -148,6 +150,11 @@ public class View extends JFrame
 	public void addHintListener(ActionListener listener)
 	{
 		hint.addActionListener(listener);
+	}
+	
+	public JButton getHintButton()
+	{
+		return hint;
 	}
 	
 }

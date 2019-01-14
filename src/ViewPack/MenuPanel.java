@@ -23,6 +23,14 @@ public class MenuPanel extends JPanel
 		help = new JButton("HELP");
 		giveUp = new JButton("GIVE UP");
 		
+		newGame.setFocusPainted(false);
+		saveGame.setFocusPainted(false);
+		loadGame.setFocusPainted(false);
+		closeGame.setFocusPainted(false);
+		help.setFocusPainted(false);
+		giveUp.setFocusPainted(false);
+		
+		
 		add(newGame);
 		add(saveGame);
 		add(loadGame);

@@ -1,8 +1,8 @@
 
 HIGH PRIORITY:
 
-    HELP
-    End game screen
+    HELP        // ehh...
+    End game screen     // placeholders for now
     Hints button toggle effect
 
 
@@ -10,10 +10,12 @@ HIGH PRIORITY:
 MID PRIORITY:
 
     UI layout improvements
-    Unify chess pieces variables in model
-    Improve hints
+    Unify chess pieces variables in model   // no CHESSPIECES variables in model, enum doesn't have to be serialized
+        Could be better done with CHESSPIECES 2D array in the first place, but too much effort...
+    Improve hints   // I think they are good enough now
+        Maybe use different colors for different values
     Add hints for marked tiles
-        Maybe put numbers on tiles
+        Maybe put numbers on tiles  // DONE
 
 
 
