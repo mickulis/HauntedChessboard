@@ -10,19 +10,20 @@ import EnumPack.CHESSPIECES;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Model implements Serializable
 {
-	private int minimalMarkedTiles = 3;
+	private final int minimalMarkedTiles = 3;
 	private Random rng = new Random();
 	private int height;
 	private int width;
-	private int[][] chessboard;
-	private Coordinates[] points;
+	private CHESSPIECES[][] chessboard;
+	private Coordinates[] initialPieceLocations;
 	private int[] initialPieceAvailability = {0, 1, 1, 1, 1, 1}; // for cloning later on
 	private int[] currentPieceAvailability = {0, 1, 1, 1, 1, 1};	// check if pieces left: foreach if >0 return false
-	private boolean[][] boardOfThrees;
+	private boolean[][] tileMarkings;
 	private ArrayList<String> backlog = new ArrayList<>();
 	
 	public Model()
@@ -44,44 +45,62 @@ public class Model implements Serializable
 		int iterator = 0;
 		while(numberOfMarkedTiles < minimalMarkedTiles)
 		{
-			//region Initial state setup
 			currentPieceAvailability = initialPieceAvailability.clone();
-			chessboard = new int[height][width];
-			int numberOfPieces = 0;
-			for(int val: currentPieceAvailability)
-				numberOfPieces += val;
-			points = new Coordinates[numberOfPieces];
-			generatePoints(numberOfPieces);
-			for(int i = 0; i < numberOfPieces; i++)
-				deployPiece(points[i], i+1);
-			//endregion
-			//region Win condition setup
+			createChessboard();
+			createInitialPiecePlacement();
+			
 			numberOfMarkedTiles = 0;
-			boardOfThrees = new boolean[height][width];
-			for (int i = 0; i < height; i++)			// check triviality with boolean method instead
+			tileMarkings = new boolean[height][width];
+			for (int i = 0; i < height; i++)
 			{
 				for (int j = 0; j < width; j++)
 				{
+					//System.out.println(j + ", " + i + " value: " + getValue(i, j));
 					if (getValue(i, j) == 3)
 					{
-						boardOfThrees[i][j] = true;
+						tileMarkings[i][j] = true;
 						numberOfMarkedTiles++;
+						System.out.println(j + ", " + i + " marked");
 					}
 				}
 			}
-			//endregion
-			
-			
-			if(iterator++ == 3000)	// failsafe if finding viable setup is very unlikely with set parameters
+			System.out.println("Number of marked tiles: " + numberOfMarkedTiles);
+			displayBoard();
+			if(iterator++ == 3000 && numberOfMarkedTiles < 3)	// failsafe if finding viable setup is very unlikely with set parameters
 				throw new RuntimeException();
 		}
 		
+		prepareBoardForPlayer();
+		
+		
+	}
+	
+	private void createChessboard()
+	{
+		chessboard = new CHESSPIECES[height][width];
+		for(CHESSPIECES[] row:chessboard)
+			Arrays.fill(row, CHESSPIECES.empty);
+	}
+	
+	private void prepareBoardForPlayer()
+	{
 		backlog = new ArrayList<>();
-		chessboard = new int[height][width];	// resetting board to an empty state
+		createChessboard();
 		currentPieceAvailability = initialPieceAvailability.clone();
-		
-		
-		
+	}
+	
+	private void createInitialPiecePlacement()
+	{
+		int numberOfPieces = 0;
+		for(int val: currentPieceAvailability)
+			numberOfPieces += val;
+		initialPieceLocations = new Coordinates[numberOfPieces];
+		generatePoints(numberOfPieces);
+		for(int i = 0; i < numberOfPieces; i++)
+		{
+			deployPiece(initialPieceLocations[i], CHESSPIECES.values()[i + 1]);
+			System.out.println(initialPieceLocations[i].getY() + " " + initialPieceLocations[i].getX() + " " + CHESSPIECES.values()[i + 1]);
+		}
 	}
 	
 	
@@ -119,15 +138,15 @@ public class Model implements Serializable
 	{
 		switch(chessboard[y][x])
 		{
-			case 1:
+			case knight:
 				System.out.print(" N "); return;
-			case 2:
+			case bishop:
 				System.out.print(" B "); return;
-			case 3:
+			case rook:
 				System.out.print(" R "); return;
-			case 4:
+			case king:
 				System.out.print(" K "); return;
-			case 5:
+			case queen:
 				System.out.print(" Q "); return;
 		}
 		System.out.print("   ");
@@ -185,45 +204,25 @@ public class Model implements Serializable
 		if(!isOccupied(p))
 			return;
 		
-		int piece = chessboard[p.getY()][p.getX()];
-		//if(piece > 0)	// obsolete with isOccupied check above (maybe?)
-		{
-			currentPieceAvailability[piece]++;
-		}
-		chessboard[p.getY()][p.getX()] = 0;
-		backlog.add("r " + p.getY() + " " + p.getX() + " " + CHESSPIECES.values()[piece]);
+		CHESSPIECES piece = chessboard[p.getY()][p.getX()];
+		currentPieceAvailability[CHESSPIECES.getInteger(piece)]++;
+		chessboard[p.getY()][p.getX()] = CHESSPIECES.empty;
+		backlog.add("r " + p.getY() + " " + p.getX() + " " + piece);
 		//displayBoard();
-		
 	}
 	
-	public void deployPiece(Coordinates p, int piece)
-	{
-		if(isOccupied(p))
-			removePiece(p);
-		//if(currentPieceAvailability[piece] > 0)
-		{
-			currentPieceAvailability[piece]--;
-			chessboard[p.getY()][p.getX()] = piece;
-		}
-		
-		backlog.add("p " + p.getY() + " " + p.getX() + " " + CHESSPIECES.values()[piece]);
-		
-		//displayBoard();
-		
-	}
+	
 	
 	public void deployPiece(Coordinates p, CHESSPIECES piece)
 	{
 		if(isOccupied(p))
 			removePiece(p);
-		int i = CHESSPIECES.getInteger(piece);
-		if(i > 0)
+		//int i = CHESSPIECES.getInteger(piece);
+		if(piece != CHESSPIECES.empty)
 		{
-			//if(currentPieceAvailability[i] > 0)
-			{
-				currentPieceAvailability[i]--;
-				chessboard[p.getY()][p.getX()] = i;
-			}
+			
+			currentPieceAvailability[CHESSPIECES.getInteger(piece)]--;
+			chessboard[p.getY()][p.getX()] = piece;
 			backlog.add("p " + p.getY() + " " + p.getX() + " " + piece);
 			
 			//displayBoard();
@@ -231,7 +230,7 @@ public class Model implements Serializable
 		}
 		else	// remove
 		{
-			chessboard[p.getY()][p.getX()] = 0;
+			chessboard[p.getY()][p.getX()] = CHESSPIECES.empty;
 			//displayBoard();
 			
 		}
@@ -240,8 +239,8 @@ public class Model implements Serializable
 	public void swap(Coordinates first, Coordinates second)
 	{
 		CHESSPIECES firstPiece = getPiece(first);
-		chessboard[first.getY()][first.getX()] = CHESSPIECES.getInteger(getPiece(second));
-		chessboard[second.getY()][second.getX()] = CHESSPIECES.getInteger(firstPiece);
+		chessboard[first.getY()][first.getX()] = getPiece(second);
+		chessboard[second.getY()][second.getX()] = firstPiece;
 		backlog.add("s " + first.getY() + " " + first.getX() + " " + second.getY() + " " + second.getX());
 		
 		//displayBoard();
@@ -251,12 +250,12 @@ public class Model implements Serializable
 	public void solve()
 	{
 		currentPieceAvailability = initialPieceAvailability.clone();
-		chessboard = new int[height][width];
+		createChessboard();
 		int numberOfPieces = 0;
 		for(int val: currentPieceAvailability)
 			numberOfPieces += val;
 		for(int i = 0; i < numberOfPieces; i++)
-			deployPiece(points[i], i+1);
+			deployPiece(initialPieceLocations[i], CHESSPIECES.values()[i+1]);
 	}
 	public void back()
 	{
@@ -295,7 +294,7 @@ public class Model implements Serializable
 		int y = Integer.parseInt(movePartitioned[1]);
 		int x = Integer.parseInt(movePartitioned[2]);
 		CHESSPIECES piece = CHESSPIECES.getPiece(movePartitioned[3]);
-		deployPiece(new Coordinates(y, x), CHESSPIECES.getInteger(piece));
+		deployPiece(new Coordinates(y, x), piece);
 		backlog.remove(backlog.size() - 1);
 	}
 	
@@ -321,10 +320,10 @@ public class Model implements Serializable
 			do
 			{
 				distinct = true;
-				points[i] = new Coordinates(rng.nextInt(height), rng.nextInt(width));
+				initialPieceLocations[i] = new Coordinates(rng.nextInt(height), rng.nextInt(width));
 				for(int j = 0; j < i; j++)
 				{
-					if(points[i] == points[j])
+					if(initialPieceLocations[i] == initialPieceLocations[j])
 						distinct = false;
 				}
 			}
@@ -342,24 +341,25 @@ public class Model implements Serializable
 	
 	private int checkLine(int y, int x, int yMod, int xMod)
 	{
-		int tile;
+		CHESSPIECES tile;
 		int i = 0;
 		do
 		{
 			i++;
 			tile = getTile(y + i * yMod, x + i * xMod);
+			System.out.println(y + i * yMod + " " + x + i * xMod + " " + tile);
 		}
-		while(tile == 0);
+		while(tile == CHESSPIECES.empty);
 		
-		if(tile == 5 || (tile == 4 & i == 1))	// King immediately next to the tile or Queen anywhere on the line
+		if(tile == CHESSPIECES.queen || (tile == CHESSPIECES.king & i == 1))	// King immediately next to the tile or Queen anywhere on the line
 		{
 			return 1;
 		}
-		if(yMod * xMod == 0 && tile == 3)	// Rook attacking
+		if(yMod * xMod == 0 && tile == CHESSPIECES.rook)	// Rook attacking
 		{
 				return 1;
 		}
-		if(yMod * xMod != 0 && tile == 2)	// Bishop attacking
+		if(yMod * xMod != 0 && tile == CHESSPIECES.bishop)	// Bishop attacking
 		{
 			return 1;
 		}
@@ -369,21 +369,21 @@ public class Model implements Serializable
 	private int checkKnights(int y, int x)
 	{
 		int value = 0;
-		if(getTile(y-2, x-1) == 1)
+		if(getTile(y-2, x-1) == CHESSPIECES.knight)
 			value++;
-		if(getTile(y-2, x+1) == 1)
+		if(getTile(y-2, x+1) == CHESSPIECES.knight)
 			value++;
-		if(getTile(y-1, x-2) == 1)
+		if(getTile(y-1, x-2) == CHESSPIECES.knight)
 			value++;
-		if(getTile(y-1, x+2) == 1)
+		if(getTile(y-1, x+2) == CHESSPIECES.knight)
 			value++;
-		if(getTile(y+1, x-2) == 1)
+		if(getTile(y+1, x-2) == CHESSPIECES.knight)
 			value++;
-		if(getTile(y+1, x+2) == 1)
+		if(getTile(y+1, x+2) == CHESSPIECES.knight)
 			value++;
-		if(getTile(y+2, x-1) == 1)
+		if(getTile(y+2, x-1) == CHESSPIECES.knight)
 			value++;
-		if(getTile(y+2, x+1) == 1)
+		if(getTile(y+2, x+1) == CHESSPIECES.knight)
 			value++;
 		
 		return value;
@@ -397,16 +397,23 @@ public class Model implements Serializable
 		return (currentPieceAvailability[piece] == 0);
 	}
 	
+	public boolean isDeployed(CHESSPIECES piece)
+	{
+		if(piece == CHESSPIECES.empty)
+			return false;
+		return (currentPieceAvailability[CHESSPIECES.getInteger(piece)] == 0);
+	}
+	
 	public boolean isOccupied(Coordinates p)
 	{
-		return !(getPiece(p) == null);
+		return !(getPiece(p) == CHESSPIECES.empty);
 	}
 	
 	
 	
 	public boolean isMarked(Coordinates p)
 	{
-		return boardOfThrees[p.getY()][p.getX()];
+		return tileMarkings[p.getY()][p.getX()];
 	}
 	
 	public boolean checkVictoryCondition()
@@ -417,9 +424,9 @@ public class Model implements Serializable
 		{
 			for (int j = 0; j < width; j++)
 			{
-				if(getValue(i, j) == 3 && !boardOfThrees[i][j])
+				if(getValue(i, j) == 3 && !tileMarkings[i][j])
 					return false;
-				if(getValue(i, j) != 3 && boardOfThrees[i][j])
+				if(getValue(i, j) != 3 && tileMarkings[i][j])
 					return false;
 			}
 		}
@@ -431,11 +438,10 @@ public class Model implements Serializable
 	
 	public CHESSPIECES getPiece(Coordinates p)
 	{
-		int value = getTile(p.getY(), p.getX());
-		if(value > 0)
-			return CHESSPIECES.values()[value];
-		return null;
+		return getTile(p.getY(), p.getX());
 	}
+	
+	
 	
 	public int getValue(int y, int x)
 	{
@@ -459,7 +465,7 @@ public class Model implements Serializable
 		
 	}
 	
-	private int getTile(int y, int x)
+	private CHESSPIECES getTile(int y, int x)
 	{
 		try
 		{
@@ -467,7 +473,7 @@ public class Model implements Serializable
 		}
 		catch(IndexOutOfBoundsException ioobe)
 		{
-			return -1;	// outside of the board
+			return null;	// outside of the board
 		}
 	}
 	

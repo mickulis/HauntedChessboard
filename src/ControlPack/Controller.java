@@ -308,7 +308,7 @@ public class Controller
 				CHESSPIECES currentPiece = model.getPiece(tile.getPoint());
 				view.undeployPiece(currentPiece);
 				model.removePiece(tile.getPoint());
-				model.deployPiece(tile.getPoint(), CHESSPIECES.getInteger(focusPiece.getPiece()));
+				model.deployPiece(tile.getPoint(), focusPiece.getPiece());
 				if(focusPiece.getPiece() != CHESSPIECES.empty)
 					focusPiece.setEnabled(false);
 				
