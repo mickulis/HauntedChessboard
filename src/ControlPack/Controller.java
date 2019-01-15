@@ -289,7 +289,7 @@ public class Controller
 	}
 	
 	
-	//region Inner Classes		// toImplement: Save, Load, Start, Close, GiveUp, Back, Hints, Help
+	//region Inner Classes
 	
 	class TileListener implements ActionListener
 	{
@@ -400,7 +400,7 @@ public class Controller
 		}
 	}
 	
-	class BackListener implements ActionListener
+	class BackListener implements ActionListener	// rare bug when initiated again before previous move finishes and there's only 1 move to reverse
 	{
 		@Override
 		public void actionPerformed(ActionEvent e)

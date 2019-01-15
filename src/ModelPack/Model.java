@@ -26,6 +26,7 @@ public class Model implements Serializable
 	private boolean[][] tileMarkings;
 	private ArrayList<String> backlog = new ArrayList<>();
 	
+	
 	public Model()
 	{
 		this(8, 8);
@@ -60,12 +61,12 @@ public class Model implements Serializable
 					{
 						tileMarkings[i][j] = true;
 						numberOfMarkedTiles++;
-						System.out.println(j + ", " + i + " marked");
+						//System.out.println(j + ", " + i + " marked");
 					}
 				}
 			}
-			System.out.println("Number of marked tiles: " + numberOfMarkedTiles);
-			displayBoard();
+			//System.out.println("Number of marked tiles: " + numberOfMarkedTiles);
+			//displayBoard();
 			if(iterator++ == 3000 && numberOfMarkedTiles < 3)	// failsafe if finding viable setup is very unlikely with set parameters
 				throw new RuntimeException();
 		}
@@ -99,7 +100,7 @@ public class Model implements Serializable
 		for(int i = 0; i < numberOfPieces; i++)
 		{
 			deployPiece(initialPieceLocations[i], CHESSPIECES.values()[i + 1]);
-			System.out.println(initialPieceLocations[i].getY() + " " + initialPieceLocations[i].getX() + " " + CHESSPIECES.values()[i + 1]);
+			//System.out.println(initialPieceLocations[i].getY() + " " + initialPieceLocations[i].getX() + " " + CHESSPIECES.values()[i + 1]);
 		}
 	}
 	
@@ -259,14 +260,12 @@ public class Model implements Serializable
 	}
 	public void back()
 	{
-		if(backlog.size() == 0 )
-			return;
-		String lastMove = backlog.get(backlog.size() - 1);
-		backlog.remove(backlog.size() - 1);
-		
-		reverseMove(lastMove);
-		
-		
+			if (backlog.size() == 0)
+				return;
+			String lastMove = backlog.get(backlog.size() - 1);
+			backlog.remove(backlog.size() - 1);
+			
+			reverseMove(lastMove);
 	}
 	
 	private void reverseMove(String move)
@@ -347,7 +346,7 @@ public class Model implements Serializable
 		{
 			i++;
 			tile = getTile(y + i * yMod, x + i * xMod);
-			System.out.println(y + i * yMod + " " + x + i * xMod + " " + tile);
+			//System.out.println(y + i * yMod + " " + x + i * xMod + " " + tile);
 		}
 		while(tile == CHESSPIECES.empty);
 		
