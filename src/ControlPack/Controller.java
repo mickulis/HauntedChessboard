@@ -143,7 +143,7 @@ public class Controller
 		for(PieceButton button: view.getPieceButtons())
 		{
 			button.unfocus();
-			if(model.isDeployed(CHESSPIECES.getInteger(button.getPiece())))
+			if(model.isDeployed(button.getPiece()))
 			{
 				button.setEnabled(false);
 			}

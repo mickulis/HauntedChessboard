@@ -389,14 +389,6 @@ public class Model implements Serializable
 		return value;
 	}
 	
-	
-	public boolean isDeployed(int piece)
-	{
-		if(piece == 0)
-			return false;
-		return (currentPieceAvailability[piece] == 0);
-	}
-	
 	public boolean isDeployed(CHESSPIECES piece)
 	{
 		if(piece == CHESSPIECES.empty)
